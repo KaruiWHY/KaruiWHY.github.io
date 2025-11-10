@@ -101,6 +101,38 @@ h2 {
     font-style: italic;
 }
 
+/* Layout for logo + text inside each education item */
+.education-item .edu-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.school-logo {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: transparent;
+    flex-shrink: 0;
+}
+
+.edu-text h3 {
+    margin-bottom: 6px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+    .education-item .edu-inner {
+        gap: 12px;
+    }
+
+    .school-logo {
+        width: 48px;
+        height: 48px;
+    }
+}
+
 /* Contact section */
 .contact p {
     font-size: 1.1rem;
