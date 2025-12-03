@@ -8,11 +8,11 @@
       "content": "<p>你好！我是 WU Haoyang。这里会发布我关于电子信息、信号处理以及学习生活的笔记与心得。</p>"
     },
     {
-      "title": "研究笔记：基础电路复习",
-      "date": "2025-11-05",
-      "slug": "circuit-notes",
-      "excerpt": "一些关于晶体管放大电路与偏置的速记。",
-      "content": "<h4>晶体管偏置</h4><p>本文记录了常用的偏置电路，稳定性分析以及常见的计算公式。后续会补充测量数据与示例电路图。</p>"
+      "title": "Now I am a undergraduate student at SIGS!",
+      "date": "2025-09-01",
+      "slug": "",
+      "excerpt": "",
+      "content": ""
     }
   ]
 }
