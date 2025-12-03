@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog - WU Haoyang">
+    <title>Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome!</h1>
+            <nav class="site-nav">
+                <a href="index.html">About</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="blog">
+                <h2>Blog</h2>
+                <div id="posts">
+                    <p>Loading posts…</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 WU Haoyang. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+    // Fetch posts from posts/posts.json and render them.
+    async function loadPosts() {
+        const container = document.getElementById('posts');
+        try {
+            const res = await fetch('posts/posts.json');
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data = await res.json();
+            renderPosts(container, data.posts || []);
+        } catch (err) {
+            console.warn('Failed to load posts:', err);
+            container.innerHTML = '<p>无法加载文章（在本地直接用 file:// 打开时 fetch 可能被浏览器阻止）。\n建议用本地静态服务器（参见项目根目录的 BLOG_INSTRUCTIONS.md）。</p>';
+        }
+    }
+
+    function renderPosts(container, posts) {
+        if (!posts.length) {
+            container.innerHTML = '<p>目前还没有文章。你可以参照说明添加第一篇文章。</p>';
+            return;
+        }
+        container.innerHTML = '';
+        posts.forEach(post => {
+            const article = document.createElement('article');
+            article.className = 'post';
+
+            const title = document.createElement('h3');
+            title.className = 'post-title';
+            title.textContent = post.title;
+
+            const meta = document.createElement('p');
+            meta.className = 'post-date';
+            meta.textContent = post.date || '';
+
+            const content = document.createElement('div');
+            content.className = 'post-content';
+            // post.excerpt and post.content may contain simple HTML; insert as HTML
+            content.innerHTML = post.excerpt || (post.content ? post.content.substring(0, 300) + '...' : '');
+
+            const readMore = document.createElement('button');
+            readMore.className = 'read-more';
+            readMore.type = 'button';
+            readMore.textContent = 'Read more';
+
+            const full = document.createElement('div');
+            full.className = 'post-full';
+            full.style.display = 'none';
+            full.innerHTML = post.content || '';
+
+            readMore.addEventListener('click', () => {
+                if (full.style.display === 'none') {
+                    full.style.display = 'block';
+                    readMore.textContent = 'Show less';
+                } else {
+                    full.style.display = 'none';
+                    readMore.textContent = 'Read more';
+                }
+            });
+
+            article.appendChild(title);
+            article.appendChild(meta);
+            article.appendChild(content);
+            article.appendChild(readMore);
+            article.appendChild(full);
+
+            container.appendChild(article);
+        });
+    }
+
+    loadPosts();
+    </script>
+    <script>
+    // Highlight active header nav link based on current filename
+    (function(){
+        try{
+            const links = document.querySelectorAll('.site-nav a');
+            const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+            links.forEach(a => {
+                const href = (a.getAttribute('href') || '').split('/').pop().toLowerCase();
+                if (!href) return;
+                if (href === current || (href === 'index.html' && (current === '' || current === 'index.html'))) {
+                    a.classList.add('active');
+                }
+            });
+        }catch(e){/* ignore */}
+    })();
+    </script>
+</body>
+</html>
