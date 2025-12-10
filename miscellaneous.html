@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Miscellaneous - Photography & Art - WU Haoyang">
+    <title>Miscellaneous</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Miscellaneous</h1>
+            <nav class="site-nav">
+                <a href="index.html">About</a>
+                <a href="blog.html">Blog</a>
+                <a href="miscellaneous.html" class="active">Misc</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="intro">
+                <h2>Photography</h2>
+                <p>A collection of moments captured through my lens.</p>
+            </section>
+
+            <section class="gallery">
+                <!-- Example Gallery Item 1 -->
+                <div class="gallery-item">
+                    <div class="image-placeholder" style="background-color: #e0e0e0;">
+                        <img src="images/photograph/IMG_7488.jpg" alt="在我的故乡，夏日午后，涪江畔。多年以来，我都怀念这份闲适。">
+                        <!-- <span>Photo 1</span> -->
+                    </div>
+                    <div class="overlay">
+                        <h3>Urban Solitude</h3>
+                        <div class="tech-specs">
+                            <span>ISO 100</span>
+                            <span>f/1.8</span>
+                            <span>1/200s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Gallery Item 2 -->
+                <div class="gallery-item">
+                    <div class="image-placeholder" style="background-color: #d0d0d0;">
+                        <span>Photo 2</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Neon Nights</h3>
+                        <div class="tech-specs">
+                            <span>ISO 800</span>
+                            <span>f/2.8</span>
+                            <span>1/60s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Gallery Item 3 -->
+                <div class="gallery-item">
+                    <div class="image-placeholder" style="background-color: #c0c0c0;">
+                        <span>Photo 3</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Circuit Dreams</h3>
+                        <div class="tech-specs">
+                            <span>ISO 400</span>
+                            <span>f/4.0</span>
+                            <span>1/100s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Gallery Item 4 -->
+                <div class="gallery-item">
+                    <div class="image-placeholder" style="background-color: #b0b0b0;">
+                        <span>Photo 4</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Nature's Code</h3>
+                        <div class="tech-specs">
+                            <span>ISO 200</span>
+                            <span>f/5.6</span>
+                            <span>1/400s</span>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Example Gallery Item 5 -->
+                 <div class="gallery-item">
+                    <div class="image-placeholder" style="background-color: #a0a0a0;">
+                        <span>Photo 5</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Structure</h3>
+                        <div class="tech-specs">
+                            <span>ISO 100</span>
+                            <span>f/8.0</span>
+                            <span>1/125s</span>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Example Gallery Item 6 -->
+                 <div class="gallery-item">
+                    <div class="image-placeholder" style="background-color: #909090;">
+                        <span>Photo 6</span>
+                    </div>
+                    <div class="overlay">
+                        <h3>Light Trails</h3>
+                        <div class="tech-specs">
+                            <span>ISO 100</span>
+                            <span>f/11</span>
+                            <span>30s</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 WU Haoyang. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- EXIF Extraction Script -->
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            const images = document.querySelectorAll('.gallery-item img');
+            
+            images.forEach(img => {
+                if (img.complete) {
+                    readExifData(img);
+                } else {
+                    img.onload = () => readExifData(img);
+                }
+            });
+
+            function readExifData(img) {
+                // EXIF.getData will extract tags from the image
+                EXIF.getData(img, function() {
+                    // 'this' refers to the image element with EXIF data attached
+                    const iso = EXIF.getTag(this, "ISOSpeedRatings");
+                    const fNumber = EXIF.getTag(this, "FNumber");
+                    const exposureTime = EXIF.getTag(this, "ExposureTime");
+                    
+                    // If no relevant data found, keep the hardcoded defaults
+                    if (!iso && !fNumber && !exposureTime) return;
+
+                    const container = img.closest('.gallery-item').querySelector('.tech-specs');
+                    if (!container) return;
+
+                    // Clear existing hardcoded specs
+                    container.innerHTML = '';
+
+                    if (iso) {
+                        const span = document.createElement('span');
+                        span.textContent = `ISO ${iso}`;
+                        container.appendChild(span);
+                    }
+
+                    if (fNumber) {
+                        const span = document.createElement('span');
+                        span.textContent = `f/${Number(fNumber)}`;
+                        container.appendChild(span);
+                    }
+
+                    if (exposureTime) {
+                        const span = document.createElement('span');
+                        let timeText = '';
+                        const timeVal = Number(exposureTime);
+                        
+                        if (timeVal < 1 && timeVal > 0) {
+                            // Convert decimal (e.g. 0.005) to fraction (e.g. 1/200)
+                            timeText = `1/${Math.round(1 / timeVal)}s`;
+                        } else {
+                            timeText = `${timeVal}s`;
+                        }
+                        span.textContent = timeText;
+                        container.appendChild(span);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
