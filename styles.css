@@ -39,6 +39,11 @@ header h1 {
     letter-spacing: -0.02em;
 }
 
+header .header-link {
+    color: inherit;
+    text-decoration: none;
+}
+
 /* Site navigation (header) */
 .site-nav {
     margin-top: 16px;
