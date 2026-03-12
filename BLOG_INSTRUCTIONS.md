@@ -1,47 +1,147 @@
-如何添加博客文章
+# 博客文章上传与编辑说明
 
-有两种简单方式把文章加入到这个静态站点：
+本博客使用 **Markdown + LaTeX** 写作文章，并通过 `posts/posts.json` 管理文章列表。下面步骤假设你已经将本仓库克隆到本地，并在根目录下操作（即 `e:\KaruiWHY.github.io`）。
 
-方法 A（推荐，适合多人或使用简单自动化）：在 `posts/posts.json` 中添加条目
+## 1. 本地预览方式
 
-- 打开 `posts/posts.json`，文件包含一个 JSON 对象，形如:
+由于浏览器在 `file://` 协议下会阻止 `fetch` 读取本地文件，**请使用本地静态服务器** 来预览博客页面，例如：
 
-  {
-    "posts": [
-      { "title": "...", "date": "YYYY-MM-DD", "slug": "my-first-post", "excerpt": "短摘要", "content": "<p>HTML 正文</p>" },
-      ...
-    ]
-  }
-
-- 新增一个对象到 `posts` 数组。字段说明：
-  - `title`：文章标题（字符串）。
-  - `date`：发布日期（字符串，建议 ISO 格式 YYYY-MM-DD）。
-  - `slug`：短标识（用于将来若想生成独立页面或链接）。
-  - `excerpt`：在列表中显示的短摘要（可含少量 HTML）。
-  - `content`：完整文章内容，当前实现直接将字符串插入为 HTML（可以包含段落、标题、内联图片标签等）。
-
-- 保存后（若你用本地静态服务器）刷新 `blog.html` 即可看到新文章。
-
-方法 B（把每篇文章做成单独 HTML 文件并在 `blog.html` 手动链接）
-
-- 在 `posts/` 目录新建 `slug.html`，写入完整 HTML（或局部 HTML 片段），然后在 `blog.html` 中手动添加一个链接到该文件的条目。
-
-注意：
-- 直接用浏览器打开 `blog.html`（file://）时，脚本通过 fetch 加载 `posts/posts.json` 可能被浏览器阻止（跨域/本地文件限制）。推荐用下面的本地静态服务器方式之一来预览：
-
-在 PowerShell 中（项目根目录）：
-
-```powershell
-# 方法 1: Python (如果已安装)
+```bash
+cd e:\KaruiWHY.github.io
 python -m http.server 8000
-# 打开 http://localhost:8000/blog.html
-
-# 方法 2: 使用 VS Code 的 Live Server 插件
-# 在 VS Code 中右键 index.html -> Open with Live Server
 ```
 
-安全提示：当前实现会把 `content` 字段直接作为 HTML 插入页面，因此请仅放入受信任的内容，避免不受信任的第三方 HTML/脚本以免 XSS 风险。
+然后在浏览器中访问：
 
-进阶建议：
-- 如果你想使用 Markdown 写作，可以在本地把 Markdown 转成 HTML（例如用 pandoc、markdown-it 等），或在 `blog.html` 中加入一个轻量的 Markdown 渲染器并把 markdown 文件转换为字符串后渲染。该改动需要额外脚本。
-- 若希望每篇文章有独立页面，我可以继续帮你：生成每篇的 `posts/slug.html` 文件并在 `blog.html` 自动创建链接。
+```text
+http://localhost:8000/blog.html
+```
+
+## 2. 文章文件结构约定
+
+- 所有文章的 Markdown 文件统一放在 `posts/` 目录下，例如：
+  - `posts/first-note.md`
+  - `posts/2025-01-01-my-first-post.md`
+- 文章的元数据（标题、日期、标签等）集中保存在：
+  - `posts/posts.json`
+
+浏览器打开 `blog.html` 时，会按以下流程加载文章：
+
+1. 先 `fetch('posts/posts.json')` 获取文章列表。
+2. 对于每篇文章，再通过 `fetch(mdPath)` 读取对应的 Markdown 文件。
+3. 使用 `marked` 将 Markdown 渲染为 HTML。
+4. 使用 `KaTeX` 渲染 Markdown 中的数学公式。
+
+## 3. posts/posts.json 格式
+
+`posts/posts.json` 的基本结构如下：
+
+```json
+{
+  "posts": [
+    {
+      "id": "first-note",
+      "title": "Getting started with this blog",
+      "date": "2025-01-01",
+      "excerpt": "A short note about how this blog is organized, how Markdown and LaTeX are rendered, and how to add new posts.",
+      "mdPath": "posts/first-note.md",
+      "tags": ["meta", "markdown", "latex"]
+    }
+  ]
+}
+```
+
+每篇文章的字段说明：
+
+- `id`：文章的唯一标识符（推荐使用短横线分隔的小写英文），仅前端使用，不会直接展示。
+- `title`：文章标题，展示在博客列表中。
+- `date`：日期字符串，例如 `2025-01-01`。
+- `excerpt`：可选，文章摘要。若省略，则会自动用 Markdown 内容前几百个字符生成预览。
+- `mdPath`：**相对于站点根目录的 Markdown 文件路径**，例如 `posts/my-first-post.md`。
+- `tags`：可选，字符串数组，会在文章卡片中展示为小标签。
+
+> 注意：`posts` 数组的顺序会直接影响页面上的显示顺序。你可以将最新的文章放在数组最前面。
+
+## 4. 新建一篇文章的完整流程
+
+假设要新建一篇 ID 为 `my-first-post` 的文章：
+
+### 步骤 1：创建 Markdown 文件
+
+在 `posts/` 目录下新建文件 `posts/my-first-post.md`，示例内容：
+
+```markdown
+## My First Post
+
+This is my *first* post on this site. I can write in **Markdown** and also include equations like \( e^{i\pi} + 1 = 0 \).
+
+Here is a block equation:
+
+$$
+\\int_{0}^{1} x^2 \\, dx = \\frac{1}{3}
+$$
+```
+
+说明：
+
+- 使用普通 Markdown 语法写正文。
+- 行内公式推荐使用 `\( ... \)` 或 `$...$`。
+- 块级公式推荐使用 `$$ ... $$` 或 `\[ ... \]`。
+
+### 步骤 2：在 posts/posts.json 中注册文章
+
+打开 `posts/posts.json`，在 `posts` 数组中追加一个对象，例如：
+
+```json
+{
+  "id": "my-first-post",
+  "title": "My First Post",
+  "date": "2025-02-01",
+  "excerpt": "My first note written in Markdown with LaTeX equations.",
+  "mdPath": "posts/my-first-post.md",
+  "tags": ["life", "note"]
+}
+```
+
+确保：
+
+- JSON 语法正确（逗号不要多或少）。
+- `mdPath` 与实际文件路径一致。
+
+### 步骤 3：本地预览与检查
+
+1. 启动或重新启动本地静态服务器（例如 `python -m http.server 8000`）。
+2. 在浏览器中打开 `http://localhost:8000/blog.html`。
+3. 检查：
+   - 新文章是否出现在列表中。
+   - 「Read more」按钮是否能展开全文。
+   - Markdown 渲染是否正常（标题、列表、代码块等）。
+   - LaTeX 公式是否由 KaTeX 正确渲染。
+
+## 5. LaTeX 公式支持说明
+
+本博客通过 KaTeX 的 `auto-render` 脚本支持多种定界符，你可以使用：
+
+- 行内公式：
+  - `\( ... \)` 或 `$...$`
+- 块级公式：
+  - `$$ ... $$` 或 `\[ ... \]`
+
+建议：
+
+- 避免在普通文本中频繁使用单独的 `$`，以免和公式定界冲突。
+- 复杂公式建议使用 `$$ ... $$` 块级形式，排版更清晰。
+
+## 6. 将更改推送到 GitHub Pages
+
+在本地通过浏览器确认页面效果后：
+
+```bash
+git status
+git add posts/posts.json posts/my-first-post.md
+git commit -m "Add new blog post: my-first-post"
+git push
+```
+
+当 GitHub Pages 部署完成后，即可通过 `https://karuiwhy.github.io/blog.html` 在线访问最新内容。
+

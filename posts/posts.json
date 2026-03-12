@@ -1,18 +1,13 @@
 {
   "posts": [
     {
-      "title": "欢迎来到我的博客",
-      "date": "2025-11-11",
-      "slug": "welcome",
-      "excerpt": "这是我的第一篇博客文章，介绍我和我的研究兴趣。",
-      "content": "<p>你好！我是 WU Haoyang。这里会发布我关于电子信息、信号处理以及学习生活的笔记与心得。</p>"
-    },
-    {
-      "title": "Now I am a undergraduate student at SIGS!",
-      "date": "2025-09-01",
-      "slug": "",
-      "excerpt": "",
-      "content": ""
+      "id": "first-note",
+      "title": "Getting started with this blog",
+      "date": "2025-01-01",
+      "excerpt": "A short note about how this blog is organized, how Markdown and LaTeX are rendered, and how to add new posts.",
+      "mdPath": "posts/first-note.md",
+      "tags": ["meta", "markdown", "latex"]
     }
   ]
 }
+
