@@ -1,6 +1,6 @@
 ## Welcome
 
-This is a small demo post written in **Markdown** with inline math like \(e^{i\\pi} + 1 = 0\) and a block equation:
+This is a small demo post written in **Markdown** with inline math like $\(e^{i\\pi} + 1 = 0\) $ and a block equation:
 
 $$
 \\nabla_\\theta \\mathcal{L}(\\theta)

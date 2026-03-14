@@ -7,36 +7,51 @@
     <meta name="keywords" content="WU Haoyang blog, research notes, markdown, LaTeX, electronic information">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://karuiwhy.github.io/blog.html">
-    <title>Blog - WU Haoyang</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Blog &mdash; WU Haoyang</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-oA1oHhCq3RKqGZo4PMBVXsfS5aXoaZySUdkGFUTkOcJCIZy9FHn5Vf3LcdXK8rXK" crossorigin="anonymous">
+    <style>
+      /* KaTeX overrides for the new theme */
+      .katex {
+        font-size: 1.1em;
+      }
+      .katex-display {
+        margin: var(--space-lg) 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .katex-display > .katex {
+        white-space: normal;
+      }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><a href="index.html" class="header-link">WU Haoyang</a></h1>
-            <nav class="site-nav">
-                <a href="index.html">About</a>
-                <a href="blog.html">Blog</a>
-                <a href="#archive">Archive</a>
-            </nav>
+            <div class="header-inner">
+                <div>
+                    <h1><a href="index.html" class="header-link">Blog</a></h1>
+                    <p class="header-subtitle">Notes & Observations</p>
+                </div>
+                <nav class="site-nav">
+                    <a href="index.html">About</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="#archive">Archive</a>
+                </nav>
+            </div>
         </header>
 
         <main>
             <section class="blog">
-                <h2>Blog</h2>
                 <p class="blog-intro">Thoughts, notes, and progress logs on research, learning, and life.</p>
                 <div id="posts">
-                    <p>Loading posts…</p>
+                    <p style="color: var(--text-muted); font-style: italic;">Loading posts&hellip;</p>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p>&copy; 2025 WU Haoyang. All rights reserved.</p>
+            <p>&copy; 2025 WU Haoyang</p>
         </footer>
     </div>
 
@@ -54,7 +69,7 @@
             renderPosts(container, data.posts || []);
         } catch (err) {
             console.warn('Failed to load posts:', err);
-            container.innerHTML = '<p>无法加载文章（在本地直接用 file:// 打开时 fetch 可能被浏览器阻止）。\n建议用本地静态服务器（参见项目根目录的 BLOG_INSTRUCTIONS.md）。</p>';
+            container.innerHTML = '<p style="color: var(--ink-600);">Unable to load posts. If viewing locally, please use a local server (see BLOG_INSTRUCTIONS.md).</p>';
         }
     }
 
@@ -80,7 +95,8 @@
                 delimiters: [
                     { left: "$$", right: "$$", display: true },
                     { left: "\\[", right: "\\]", display: true },
-                    { left: "\\(", right: "\\)", display: false }
+                    { left: "\\(", right: "\\)", display: false },
+                    { left: "$", right: "$", display: false }
                 ],
                 throwOnError: false
             });
@@ -91,7 +107,7 @@
 
     async function renderPosts(container, posts) {
         if (!posts.length) {
-            container.innerHTML = '<p>目前还没有文章。你可以参照说明添加第一篇文章。</p>';
+            container.innerHTML = '<p style="color: var(--ink-500); font-style: italic;">No posts yet. Check back soon.</p>';
             return;
         }
         container.innerHTML = '';
@@ -162,6 +178,9 @@
             const html = renderMarkdown(markdownText);
             full.innerHTML = html;
 
+            // Render math immediately after HTML is inserted
+            renderMathInArticle(full);
+
             // Use first 200 chars of plain markdown as excerpt if not explicitly provided
             const excerptSource = post.excerpt || markdownText;
             if (excerptSource) {
@@ -171,12 +190,11 @@
                 content.textContent = '';
             }
 
-            // Initial math render only for expanded content to avoid heavy work
+            // Toggle expanded content
             readMore.addEventListener('click', () => {
                 if (full.style.display === 'none') {
                     full.style.display = 'block';
                     readMore.textContent = 'Show less';
-                    renderMathInArticle(full);
                 } else {
                     full.style.display = 'none';
                     readMore.textContent = 'Read more';
