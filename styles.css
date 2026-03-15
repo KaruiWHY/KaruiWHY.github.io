@@ -442,6 +442,103 @@ main a:hover {
   display: none;
 }
 
+/* ════════════════════════════════════════════════════════════════════════════
+   Award Section
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.Award-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.Award-list li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, var(--paper-warm), var(--paper-cream));
+  border: 1px solid var(--orange-100);
+  border-radius: 4px;
+  transition: all 0.3s var(--ease-out);
+}
+
+.Award-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--orange-500), var(--orange-300));
+  border-radius: 4px 0 0 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.Award-list li:hover {
+  border-color: var(--orange-200);
+  box-shadow: 0 10px 24px rgba(248, 171, 88, 0.28);
+  transform: translateX(4px);
+}
+
+.Award-list li:hover::before {
+  opacity: 1;
+}
+
+.award-year {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--orange-900);
+  padding: 6px 12px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--orange-100), var(--orange-200));
+  border: 1px solid var(--orange-200);
+}
+
+.award-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.award-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--orange-900);
+  line-height: 1.4;
+}
+
+.award-meta {
+  font-size: 0.9rem;
+  color: var(--brown-700);
+  font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .Award-list li {
+    padding: var(--space-md);
+    gap: var(--space-md);
+  }
+
+  .award-year {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .award-title {
+    font-size: 1rem;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    Contact Section
    ═══════════════════════════════════════════════════════════════════════════ */
