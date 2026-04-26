@@ -395,6 +395,13 @@ main a:hover {
   margin-bottom: var(--space-xs);
 }
 
+.edu-text .school {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--brown-700);
+  margin-bottom: var(--space-xs);
+}
+
 .edu-text .degree {
   font-size: 1.05rem;
   color: var(--brown-700);
